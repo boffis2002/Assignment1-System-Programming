@@ -6,13 +6,23 @@
 #include <fcntl.h>
 
 int process(){
+    return 0;
 }
 int summerize(){
-
+    return 0;
+}
+void outputHelp(int std){
+    FILE * f=fopen("help.txt","r");
+    char buf[1001];
+    while(fgets(buf,1001,f)){
+        if(std==1) printf("%s",buf);
+        else if(std==0) fprintf(stderr,"%s",buf);
+    }
+    fclose(f);
 }
 int main(int argc, char * argv[]){
-    int p=0,s=0,w=5,h=0,i=1;
-    char * help="-p <prog>, --proc <prog> The program for the processing operation (default: cat)\n-s <prog>, --summary <prog> The program for the summarize operation (default: cat)\n-w <workers>, --workers <workers> The number of forked processes(default: 5, max: 20)\n";
+    //Lettura argomenti
+    int w=5,i=1;
     char * proc="cat";
     char * summary="cat";
     for (;i<argc && argv[i][0]=='-';i++){
@@ -26,23 +36,25 @@ int main(int argc, char * argv[]){
             w= atoi(argv[++i])>0?(atoi(argv[i])>20?20:atoi(argv[i])):5;
         }
         else if(strcmp(argv[i],"-h")==0||strcmp(argv[i],"--help")==0){
-            printf("%s",help);
+            outputHelp(1);
         }
         else{
-            fprintf(stderr, "%s",help);
+            outputHelp(0);
             exit(EXIT_FAILURE);
         }
     }
+
+    //Esecuzioni
     for (;i<argc;i++){
+        if(w);
         pid_t pid=fork();
         if (pid < 0) {
             goto error;
         } else if (pid == 0) {
-            process();
-            summerize();
+            process(proc);
+            summerize(summary);
             exit(EXIT_SUCCESS);
         } else {
-            // Parent process
         }
     }
     exit(EXIT_SUCCESS);
