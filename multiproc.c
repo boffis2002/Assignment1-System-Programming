@@ -4,9 +4,12 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
+#include <sys/wait.h>
 
-int process(){
-    return 0;
+
+char * process(){
+    return "";
 }
 int summerize(){
     return 0;
@@ -43,20 +46,34 @@ int main(int argc, char * argv[]){
             exit(EXIT_FAILURE);
         }
     }
+    
 
     //Esecuzioni
-    for (;i<argc;i++){
-        if(w);
-        pid_t pid=fork();
-        if (pid < 0) {
-            goto error;
-        } else if (pid == 0) {
-            process(proc);
-            summerize(summary);
-            exit(EXIT_SUCCESS);
-        } else {
-        }
+    int size=argc-i;
+    struct pollfd fds[size];
+    for (int j=0;i<argc;i++){
+        struct pollfd fd;
+        fd.fd=open(argv[i],O_RDONLY);
+        fd.events=POLLOUT;
+        fds[j++]=fd;
     }
+
+    pid_t pid=fork();
+    int status,finished=0;
+    if (pid < 0) {
+        goto error;
+    } else if (pid == 0) {
+        while(finished==0){
+            //summarize
+            int p=poll(fds,size,-1);
+        }
+    } else {
+        if(w==0){
+            wait(&status);
+        }
+        
+    }
+    
     exit(EXIT_SUCCESS);
     return 0;
 error:

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "poll.h": "c",
+        "features.h": "c"
+    }
+}
